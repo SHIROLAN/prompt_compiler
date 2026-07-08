@@ -1,6 +1,6 @@
 # Prompt Compiler
 
-Prompt Compiler is a modular, extensible prompt optimization service. It analyzes prompts, detects intent, selects techniques, optimizes them for clarity and token efficiency, validates them, and scores the result.
+Prompt Compiler is a modular, extensible prompt optimization service. It analyzes prompts, detects intent, selects techniques, optimizes them for clarity and token efficiency, validates them, and scores the result. The package now also exposes a simple browser-based web UI and a CLI entry point that works correctly after installation.
 
 ## Features
 
@@ -42,6 +42,8 @@ Or, after installing the package:
 prompt-compiler "Summarize the report clearly for an executive audience."
 ```
 
+Expected output includes the original prompt, optimized prompt, detected intent, selected techniques, and a score.
+
 ### Web App
 
 Start the web application with:
@@ -50,7 +52,7 @@ Start the web application with:
 uvicorn prompt_compiler.api.main:app --host 0.0.0.0 --port 8000
 ```
 
-Then open http://127.0.0.1:8000/ in your browser. The root page provides a simple UI for compiling prompts, and `/compile` accepts JSON requests for programmatic use.
+Then open http://127.0.0.1:8000/ in your browser. The root page provides a simple UI for compiling prompts, and `/compile` accepts JSON requests for programmatic use. The app uses the shared compiler service so environment-based settings are honored in both the web UI and the API.
 
 ### HTTP API
 
@@ -92,6 +94,8 @@ Example:
 ```bash
 export PROMPT_COMPILER_MAX_TOKENS=180
 export PROMPT_COMPILER_PREFERRED_TOKENS=100
+export PROMPT_COMPILER_ENABLE_TOKEN_AWARE_OPTIMIZATION=true
+export PROMPT_COMPILER_ENABLE_VALIDATION=true
 ```
 
 ## Project Structure
