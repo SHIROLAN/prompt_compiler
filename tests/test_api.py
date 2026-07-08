@@ -15,6 +15,14 @@ def test_health_endpoint() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_root_endpoint_returns_web_ui() -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Prompt Compiler" in response.text
+    assert "Compile Prompt" in response.text
+
+
 def test_compile_endpoint_returns_optimized_prompt() -> None:
     response = client.post(
         "/compile",

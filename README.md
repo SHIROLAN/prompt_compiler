@@ -43,6 +43,30 @@ curl -X POST http://127.0.0.1:8000/compile \
   -d '{"content": "Summarize the report clearly for an executive audience.", "context": {"audience": "executive"}}'
 ```
 
+## Web App Deployment
+
+This project now exposes a simple browser UI at the root route and a JSON API at `/compile`, which makes it suitable for deployment as a lightweight web application.
+
+### Run locally
+
+```bash
+uvicorn prompt_compiler.api.main:app --host 0.0.0.0 --port 8000
+```
+
+Then open http://127.0.0.1:8000/ in your browser.
+
+### Deploy to Google Cloud Run
+
+1. Create a Google Cloud project.
+2. Enable Cloud Run API.
+3. Build and deploy the app with:
+
+```bash
+gcloud run deploy prompt-compiler --source . --region us-central1 --allow-unauthenticated
+```
+
+This will publish your app as a public web service that can be used from a browser or embedded into other apps.
+
 ## Configuration
 
 The compiler reads environment variables for configuration:

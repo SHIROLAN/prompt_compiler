@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
 from prompt_compiler.analyzer.heuristic_analyzer import HeuristicAnalyzer
 from prompt_compiler.compiler.prompt_compiler import PromptCompiler
@@ -23,6 +24,50 @@ compiler = PromptCompiler(
     validator=RuleBasedValidator(),
     scorer=HeuristicScorer(),
 )
+
+
+@app.get("/", response_class=HTMLResponse)
+def root() -> HTMLResponse:
+    """Serve a simple browser-based UI for the prompt compiler."""
+    return HTMLResponse(
+        content="""
+        <!doctype html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+            <title>Prompt Compiler</title>
+            <style>
+                body { font-family: Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 1rem; }
+                textarea { width: 100%; min-height: 140px; margin-top: 0.5rem; }
+                button { margin-top: 1rem; padding: 0.6rem 1rem; }
+                pre { background: #f6f8fa; padding: 1rem; white-space: pre-wrap; }
+            </style>
+        </head>
+        <body>
+            <h1>Prompt Compiler</h1>
+            <p>Compile and optimize prompts for better results.</p>
+            <textarea id=\"prompt\" placeholder=\"Enter your prompt here\">Summarize the report and provide examples.</textarea>
+            <button onclick=\"compilePrompt()\">Compile Prompt</button>
+            <pre id=\"result\">Waiting for compilation...</pre>
+            <script>
+                async function compilePrompt() {
+                    const prompt = document.getElementById('prompt').value;
+                    const result = document.getElementById('result');
+                    result.textContent = 'Compiling...';
+                    const response = await fetch('/compile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content: prompt, context: { audience: 'executive' } })
+                    });
+                    const data = await response.json();
+                    result.textContent = JSON.stringify(data, null, 2);
+                }
+            </script>
+        </body>
+        </html>
+        """
+    )
 
 
 @app.get("/health")
