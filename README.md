@@ -7,9 +7,24 @@ Prompt Compiler is a modular, extensible prompt optimization service. It analyze
 - Intent analysis
 - Prompt technique selection
 - Token-aware optimization
-- Prompt validation
+- Prompt validation and scoring
+- Browser-based web UI
 - HTTP API access
 - CLI access
+
+## Installation
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+On Windows PowerShell, activate the environment with:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
 ## Quick Start
 
@@ -27,15 +42,19 @@ Or, after installing the package:
 prompt-compiler "Summarize the report clearly for an executive audience."
 ```
 
-### HTTP API
+### Web App
 
-Start the API with:
+Start the web application with:
 
 ```bash
-uvicorn prompt_compiler.api.main:app --reload
+uvicorn prompt_compiler.api.main:app --host 0.0.0.0 --port 8000
 ```
 
-Then send a request:
+Then open http://127.0.0.1:8000/ in your browser. The root page provides a simple UI for compiling prompts, and `/compile` accepts JSON requests for programmatic use.
+
+### HTTP API
+
+Send a request to the API with:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/compile \
@@ -43,29 +62,21 @@ curl -X POST http://127.0.0.1:8000/compile \
   -d '{"content": "Summarize the report clearly for an executive audience.", "context": {"audience": "executive"}}'
 ```
 
-## Web App Deployment
+## Deployment
 
-This project now exposes a simple browser UI at the root route and a JSON API at `/compile`, which makes it suitable for deployment as a lightweight web application.
-
-### Run locally
-
-```bash
-uvicorn prompt_compiler.api.main:app --host 0.0.0.0 --port 8000
-```
-
-Then open http://127.0.0.1:8000/ in your browser.
+This project is suitable for deployment as a lightweight web application or API. A common option is Google Cloud Run.
 
 ### Deploy to Google Cloud Run
 
-1. Create a Google Cloud project.
-2. Enable Cloud Run API.
-3. Build and deploy the app with:
+1. Create or select a Google Cloud project.
+2. Enable the Cloud Run API.
+3. Deploy the app with:
 
 ```bash
 gcloud run deploy prompt-compiler --source . --region us-central1 --allow-unauthenticated
 ```
 
-This will publish your app as a public web service that can be used from a browser or embedded into other apps.
+This publishes the service as a public web endpoint that can be opened in a browser or integrated into other applications.
 
 ## Configuration
 
